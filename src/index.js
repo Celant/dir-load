@@ -22,16 +22,21 @@ var RequireDir = function(base, options) {
 
 	// Options
 	self.options = _.merge({
-		includedExtensions: [".js"],
+		includedExtensions: [".js", ".json"],
 		loadAsync: false,
 		loadRecursive: true,
-		filter: function(file) {
-			return _.includes(self.options.includedExtensions, path.extname(file.path));
-		}
+		filter: undefined
 	}, options);
 
+	var filterWrapper = function(file) {
+		if (self.options.filter && !self.options.filter(file)) {
+			return false;	
+		}
+		return _.includes(self.options.includedExtensions, path.extname(file.path));
+	};
+
 	// Loaded modules 
-	self.modules = {};
+	self.modules = [];
 
 	/**
 	* Process collected modules and require them
@@ -41,16 +46,20 @@ var RequireDir = function(base, options) {
 			var p = f.path;
 			var relative = p.substring(basePath.length + 1);
 			relative = relative.replace(/\.(.*?)$/, ""); // Remove file extension
-			self.modules[relative] = require(p);
-			self.emit("next", relative, self.modules[relative]);
+			var module = { "relative": relative, "module": require(p) };
+			self.modules.push(module);
+			self.emit("next", module);
 		});
 
-		self.emit("done", self.modules, _.values(self.modules));
+		self.emit("done", self.modules);
 	};
 
 	// Find and process files Synchronously
 	if (!self.options.loadAsync) {
-		var files = klawSync(basePath, { nodir: true, filter: self.options.filter });
+		var files = klawSync(basePath, {
+			nodir: true,
+			filter: filterWrapper
+		});
 		return process(files);
 	}
 
@@ -58,7 +67,10 @@ var RequireDir = function(base, options) {
 	// Files for async processing
 	var files = [];
 
-	klawRedux(basePath, { nodir: true, filter: self.options.filter })
+	klawRedux(basePath, {
+		nodir: true,
+		filter: filterWrapper
+	})
 		.on("data", function(item) {
 			files.push(item);
 		})
@@ -83,19 +95,17 @@ util.inherits(RequireDir, EventEmitter);
  * Require module by relative path
  */
 RequireDir.prototype.require = function(name) {
-	return this.modules[name];
-};
-
+	return _.find(this.modules, { "relative": name }).module;
+};		
 /**
- * Require all scanned modules and return list of them
+ * Require all scanned modules and return array of them
  */
 RequireDir.prototype.requireAll = function() {
-	return _.values(this.modules);
+	return _.map(this.modules, "module");
 };
 
 /**
- * Require all modules and return object
- * (relativePath) -> (module)
+ * Require all modules and return Array of objects
  */
 RequireDir.prototype.requireAllEx = function() {
 	return this.modules;

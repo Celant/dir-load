@@ -41,10 +41,10 @@ var DirLoad = require('dir-load');
 
 var modules = new DirLoad(__dirname + '/modules');
 
-/* Retrieve all the modules as an array */
+/* Returns an array of the loaded modules */
 console.log( modules.requireAll() );
 
-/* Retrieve all the modules as an object in the format of {"[relative path]": [module]} */
+/* Retrieve all the modules as an array of objects in the format of [{"relative": [relativePath], "module": [loadedModule]}] */
 console.log( modules.requireAllEx() );
 
 /* Retrieve a single module if you know it's relative path */
@@ -63,12 +63,12 @@ var modules = new DirLoad(__dirname + '/modules', {
 });
 
 /* Single module loaded */
-modules.on('next', function(relPath, module) {
-    console.log(relPath, module);
+modules.on('next', function(module) {
+    console.log(module.relative, module.module);
 });
 
 /* All modules loaded */
-modules.on('done', function(allModules, allModulesWithPaths) {
+modules.on('done', function(allModules) {
     console.log(allModules);
 });
 ```
@@ -89,10 +89,10 @@ var modules = new DirLoad(__dirname + '/modules', {
     }
 });
 
-/* Retrieve all the modules as an array */
+/* Returns an array of the loaded modules */
 console.log( modules.requireAll() );
 
-/* Retrieve all the modules as an object in the format of {"[relative path]": [module]} */
+/* Retrieve all the modules as an array of objects in the format of [{"relative": [relativePath], "module": [loadedModule]}] */
 console.log( modules.requireAllEx() );
 
 /* Retrieve a single module if you know it's relative path */

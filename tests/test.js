@@ -28,7 +28,7 @@ module.exports = {
 			loadAsync: false
 		});
 
-		test.ok(_.isEqual([], _.difference( _.keys(modules.requireAllEx()), EXPECTED_MODULES)), "All modules are properly loaded");
+		test.ok(_.isEqual([], _.difference( _.map(modules.requireAllEx(), "relative"), EXPECTED_MODULES)), "All modules are properly loaded");
 		test.equal("child hello", modules.require("child/a" ), "Can require child module");
 
 		test.done();
@@ -45,13 +45,13 @@ module.exports = {
 			loadAsync: true
 		});
 
-		modules.on("next", function(relPath, m) {
-			test.ok(m, relPath + " module loaded");
-			test.ok( _.includes(EXPECTED_MODULES, relPath), "Loaded expected module " + relPath );
+		modules.on("next", function(m) {
+			test.ok(m.module, m.relative + " module loaded");
+			test.ok( _.includes(EXPECTED_MODULES, m.relative), "Loaded expected module " + m.relative );
 		});
 
 		modules.on("done", function() {
-			test.ok(_.isEqual([], _.difference( _.keys(modules.requireAllEx()), EXPECTED_MODULES)), "All modules are properly loaded");
+			test.ok(_.isEqual([], _.difference( _.map(modules.requireAllEx(), "relative"), EXPECTED_MODULES)), "All modules are properly loaded");
 			test.done();
 		});
 	},
@@ -65,7 +65,7 @@ module.exports = {
 
 		var modules = new RequireDir(__dirname + "/../tests/modules");
 
-		test.ok(_.isEqual([], _.difference( _.keys(modules.requireAllEx()), EXPECTED_MODULES)), "All modules are properly loaded");
+		test.ok(_.isEqual([], _.difference( _.map(modules.requireAllEx(), "relative"), EXPECTED_MODULES)), "All modules are properly loaded");
 		test.done();
 	},
 
@@ -86,7 +86,7 @@ module.exports = {
 			}
 		});
 
-		test.ok(_.isEqual([], _.difference( _.keys(modules.requireAllEx()), EXPECTED_FILTERED_MODULES)), "Filtered out modules are properly loaded");
+		test.ok(_.isEqual([], _.difference( _.map(modules.requireAllEx(), "relative"), EXPECTED_FILTERED_MODULES)), "Filtered out modules are properly loaded");
 
 		test.done();
 	},
