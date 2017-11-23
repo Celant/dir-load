@@ -1,0 +1,23 @@
+language: node_js
+sudo: false
+language: node_js
+node_js:
+  - '4'
+  - '6'
+  - '8'
+matrix:
+  include:
+  - node_js: '6'
+    env: TEST_SUITE=lint
+env:
+- TEST_SUITE=unit
+script: npm run-script $TEST_SUITE
+
+deploy:
+  provider: npm
+  email: me@celant.co.uk
+  api_key:
+    secure: CqI+fL5tYhLJegn94Wz7wWEUycBv8Q4wDqWInM5ZWN/X3JqUUQH20DogYqGERBFg2PiR3ZxL2g0Ah9ou84spcSCbg0suAdFMBHhlaD3EWIF8QuY6AeGde7ZjxPxKGUc1I8USwdFlcVbBGl76ohPOYaWi/2FHTwat0nyDkyGpd5kRzGgUw0wZQJ2RflUR8yhANYlZrjXLHi4F7UrZj3M3Q/sgaksbVuQ7Fw9dQ5NpRg0yOdoTyo83NTZA+MX7INWgX1F4MUzkEf1Hv8I+bJLLsQJouiDC2a8xP+Nwy/iG0ZaqoJbsvvFGHws2M9rTK5vyqcc6e2k6so678IOJpw1zphVS7D9JbOLWXT8+WipuRxdK+qrg4iofVu0+GNL1g5W9U94IuxaLqoi7b+WxCEBRm/07pY6xDe+/T1dMBRY98UxRRUd0Mg4kofWCoxgOAjezlsnF93mx1w4Lfj56FuDvgvZM2++0pq+J8PlFq4/5b1FrP33mqbX+LAEYTA4fIbNlIivMG3TlZw+nX0V3iMAdxRsAtfUPyynEayLqmY2oBJ8hb3YPd2DEy2iSlPu3PT6llSxbNZkkT8cBmcQDHyO2JEczN/o3qIvg4XpH/mXNAwI/oSRFAEe0aR6Vvi874ieQpOZH5cs8vveuMa21RsO5LcgOW7UgtE7yR7fE4Xcr1B4=
+  on:
+    tags: true
+    repo: Celant/dir-load

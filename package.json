@@ -1,0 +1,41 @@
+{
+  "name": "dir-load",
+  "version": "1.0.0",
+  "description": "Dynamically find and require Node.js modules from the filesystem",
+  "author": {
+    "name": "Josh Harris",
+    "email": "me@celant.co.uk"
+  },
+  "homepage": "http://github.com/Celant/dir-load",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Celant/dir-load.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Celant/dir-load/issues"
+  },
+  "license": "MIT",
+  "keywords": [
+    "require",
+    "modules",
+    "dynamic",
+    "scanner",
+    "directory"
+  ],
+  "main": "./src/index",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "npm run lint && npm run unit",
+    "unit": "nodeunit tests --reporter verbose"
+  },
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "klaw-redux": "^1.0.1",
+    "klaw-sync": "^3.0.2",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "eslint": "^4.11.0",
+    "nodeunit": "^0.10.2"
+  }
+}
